@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import autogen
 import os
 from dotenv import load_dotenv
+import autogen
+from autogen import AssistantAgent, UserProxyAgent
 
 app = FastAPI()
 
@@ -64,7 +65,7 @@ user_proxy = autogen.UserProxyAgent(
     human_input_mode="NEVER",  # no terminal input; handled via API
     max_consecutive_auto_reply=10,
     is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
-    code_execution_config={"work_dir": "web"},
+    code_execution_config={"work_dir": "web", "use_docker": False},
     llm_config=llm_config,
     system_message="""Reply TERMINATE if the task has been solved. Otherwise, reply CONTINUE"""
 )
